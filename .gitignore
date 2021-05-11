@@ -10,3 +10,5 @@ source/x64/
 source/source/x64/
 
 source/source/source.vcxproj
+
+*.vcxproj
