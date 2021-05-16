@@ -12,3 +12,5 @@ source/source/x64/
 source/source/source.vcxproj
 
 *.vcxproj
+
+source/source/source.vcxproj.filters
