@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <stdexcept>
 
 namespace veg
 {
@@ -15,7 +16,14 @@ namespace veg
 		VegWindow(int w, int h, std::string n);
 		~VegWindow();
 
+		VegWindow(const VegWindow&) = delete;
+		VegWindow& operator = (const VegWindow&) = delete;
+
+
 		bool shouldClose() { return glfwWindowShouldClose(window); };
+		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+
+		VkExtent2D getExtent() { return{ static_cast<uint32_t>(width),static_cast<uint32_t>(height) }; };
 
 	private:
 

@@ -2,6 +2,12 @@
 
 #include "veg_window.hpp"
 #include "veg_pipeline.hpp"
+#include "veg_device.hpp"
+#include "veg_swap_chain.hpp"
+
+#include <memory>
+#include <vector>
+#include <stdexcept>
 
 namespace veg {
 
@@ -14,13 +20,25 @@ namespace veg {
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
+		App(const App&) = delete;
+		App& operator = (const App&) = delete;
+
 		void run();
-		
+
 
 	private:
 
-		VegWindow vegWindow{ WIDTH, HEIGHT, "Veg engine" };
-		VegPipeline vegPipeline{ "shaders/simple_shader.vert.spv","shaders/simple_shader.frag.spv" };
+		void createPipelineLayout();
+		void createPipeline();
+		void createCommandBuffers();
+		void drawFrame();
 
+		VegWindow vegWindow{ WIDTH, HEIGHT, "Veg engine" };
+		VegDevice vegDevice{ vegWindow };
+		VegSwapChain vegSwapChain{ vegDevice, vegWindow.getExtent() };
+
+		std::unique_ptr<VegPipeline> vegPipeline;
+		VkPipelineLayout pipelineLayout;
+		std::vector<VkCommandBuffer> commandBuffers;
 	};
 }
