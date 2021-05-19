@@ -37,6 +37,7 @@ namespace veg {
 		VegPipeline(const VegPipeline&) = delete;
 		void operator=(const VegPipeline&) = delete;
 
+		void bind(VkCommandBuffer commandBuffer);
 		static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo,uint32_t width, uint32_t height);
 
 	private:

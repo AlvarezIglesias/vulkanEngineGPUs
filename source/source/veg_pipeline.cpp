@@ -1,6 +1,7 @@
 
 
 #include "veg_pipeline.hpp"
+#include "veg_model.hpp"
 #include <cassert>
 
 namespace veg {
@@ -81,12 +82,15 @@ namespace veg {
 		shaderStages[1].pNext = nullptr;
 		shaderStages[1].pSpecializationInfo = nullptr;
 
+		auto bindingDescriptions = VegModel::Vertex::getBindingDescription();
+		auto attributeDescription = VegModel::Vertex::getAttributeDescriptions();
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescription.size());
+		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescription.data();
+		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -127,6 +131,11 @@ namespace veg {
 			throw std::runtime_error("Failed to create shadere module!");
 		}
 
+	}
+
+	void VegPipeline::bind(VkCommandBuffer commandBuffer)
+	{
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	}
 
 	void VegPipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height) {//configurando los stages del pipeline

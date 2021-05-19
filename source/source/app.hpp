@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 #include <stdexcept>
+#include <array>
+#include "veg_model.hpp"
 
 namespace veg {
 
@@ -27,7 +29,7 @@ namespace veg {
 
 
 	private:
-
+		void loadModels();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -40,5 +42,7 @@ namespace veg {
 		std::unique_ptr<VegPipeline> vegPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
+
+		std::unique_ptr<VegModel> vegModel;
 	};
 }
