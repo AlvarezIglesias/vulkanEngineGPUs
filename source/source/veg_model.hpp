@@ -10,6 +10,8 @@
 #include <cassert>
 #include "veg_device.hpp"
 
+
+
 namespace veg {
 
 	class VegModel
@@ -18,6 +20,7 @@ namespace veg {
 
 		struct Vertex {
 			glm::vec2 positions;
+			glm::vec3 color;
 
 			static std::vector<VkVertexInputBindingDescription> getBindingDescription();
 			static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();

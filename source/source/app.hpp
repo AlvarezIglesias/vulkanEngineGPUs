@@ -1,5 +1,10 @@
 #pragma once
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
+
 #include "veg_window.hpp"
 #include "veg_pipeline.hpp"
 #include "veg_device.hpp"
@@ -11,7 +16,10 @@
 #include <array>
 #include "veg_model.hpp"
 
+
+
 namespace veg {
+
 
 	class App
 	{
@@ -33,11 +41,14 @@ namespace veg {
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 
 		VegWindow vegWindow{ WIDTH, HEIGHT, "Veg engine" };
 		VegDevice vegDevice{ vegWindow };
-		VegSwapChain vegSwapChain{ vegDevice, vegWindow.getExtent() };
+		std::unique_ptr<VegSwapChain> vegSwapChain;
 
 		std::unique_ptr<VegPipeline> vegPipeline;
 		VkPipelineLayout pipelineLayout;

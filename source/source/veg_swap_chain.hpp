@@ -8,6 +8,7 @@
 // std lib headers
 #include <string>
 #include <vector>
+#include <memory>
 #include "veg_device.hpp"
 
 
@@ -18,10 +19,11 @@ class VegSwapChain {
   static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
   VegSwapChain(VegDevice &deviceRef, VkExtent2D windowExtent);
+  VegSwapChain(VegDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<VegSwapChain> previous);
   ~VegSwapChain();
 
   VegSwapChain(const VegSwapChain &) = delete;
-  void operator=(const VegSwapChain &) = delete;
+  VegSwapChain& operator=(const VegSwapChain &) = delete;
 
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }
@@ -41,6 +43,7 @@ class VegSwapChain {
   VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
  private:
+     void init();
   void createSwapChain();
   void createImageViews();
   void createDepthResources();
@@ -71,6 +74,7 @@ class VegSwapChain {
   VkExtent2D windowExtent;
 
   VkSwapchainKHR swapChain;
+  std::shared_ptr<VegSwapChain> oldSwapChain;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;

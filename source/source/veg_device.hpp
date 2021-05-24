@@ -35,7 +35,7 @@ namespace veg {
 
         // Not copyable or movable
         VegDevice(const VegDevice&) = delete;
-        void operator=(const VegDevice&) = delete;
+        VegDevice& operator=(const VegDevice&) = delete;
         VegDevice(VegDevice&&) = delete;
         VegDevice& operator=(VegDevice&&) = delete;
 
