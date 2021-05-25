@@ -14,7 +14,7 @@ namespace veg {
 		glm::mat4 proj;
 	};
 
-
+	
 
 	App::App()
 	{
@@ -29,9 +29,22 @@ namespace veg {
 		vkDestroyPipelineLayout(vegDevice.device(), pipelineLayout, nullptr);
 	}
 
+	void App::processInput(GLFWwindow* window)
+	{
+			const float cameraSpeed = 0.01f; // adjust accordingly
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			cameraPos += cameraSpeed * cameraFront;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			cameraPos -= cameraSpeed * cameraFront;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	}
 
 	void App::run() {
 		while (!vegWindow.shouldClose()) {
+			processInput(vegWindow.getWindowGLFW());
 			glfwPollEvents();
 			drawFrame();
 		}
@@ -222,8 +235,8 @@ namespace veg {
 			push.color = obj.color;
 			push.transform = obj.trnasform2d.mat2();
 
-			push.model = glm::rotate(glm::mat4(1.0f), frame++ * 0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-			push.view = glm::lookAt(glm::vec3(10.0f, 10.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			push.model = glm::rotate(glm::mat4(1.0f),  0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			push.view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 			float aspect = WIDTH / (float)HEIGHT;
 			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 100.0f);
 			push.proj[1][1] *= -1;

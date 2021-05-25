@@ -27,7 +27,7 @@ namespace veg
 
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
-
+		GLFWwindow* getWindowGLFW() { return window; }
 		
 
 		

@@ -34,6 +34,7 @@ namespace veg {
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
+
 		App(const App&) = delete;
 		App& operator = (const App&) = delete;
 
@@ -50,6 +51,12 @@ namespace veg {
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
 		void renderGameObjects(VkCommandBuffer commandBuffer);
+
+		void processInput(GLFWwindow* window);
+
+		glm::vec3 cameraPos = glm::vec3(1.0f, 0.0f, 3.0f);
+		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		VegWindow vegWindow{ WIDTH, HEIGHT, "Veg engine" };
 		VegDevice vegDevice{ vegWindow };
