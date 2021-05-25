@@ -19,7 +19,7 @@ namespace veg {
 	public:
 
 		struct Vertex {
-			glm::vec2 positions;
+			glm::vec3 positions;
 			glm::vec3 color;
 
 			static std::vector<VkVertexInputBindingDescription> getBindingDescription();

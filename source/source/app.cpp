@@ -42,9 +42,17 @@ namespace veg {
 	void App::loadGameObjects()
 	{
 		std::vector<VegModel::Vertex> vertices{
-			{{0.0f, -0.5f},{1.0f, 0.0f, 1.0f}},
-			{{0.5f, 0.5f},{0.0f, 1.0f, 1.0f}},
-			{{-0.5f, 0.5f},{1.0f, 1.0f, 0.0f}}
+			{{0.0f, -0.5f, 0.f},{1.0f, 0.0f, 1.0f}},
+			{{0.5f, 0.5f, 0.f},{0.0f, 1.0f, 1.0f}},
+			{{-0.5f, 0.5f, 0.f},{1.0f, 1.0f, 0.0f}},
+
+			{{0.0f, -0.5f, 0.f},{1.0f, 0.0f, 1.0f}},
+			{{0.5f, 0.f, 5.f},{0.0f, 1.0f, 1.0f}},
+			{{-0.5f, 0.5f, 0.f},{1.0f, 1.0f, 0.0f}}, 
+
+			{{0.0f, -0.5f, 0.f},{1.0f, 0.0f, 1.0f}},
+			{{0.5f, 0.f, 5.f},{0.0f, 1.0f, 1.0f}},
+			{{0.5f, 0.5f, 0.f},{1.0f, 1.0f, 0.0f}}
 		};
 
 		auto vegModel = std::make_shared<VegModel>(vegDevice, vertices);
@@ -215,9 +223,9 @@ namespace veg {
 			push.transform = obj.trnasform2d.mat2();
 
 			push.model = glm::rotate(glm::mat4(1.0f), frame++ * 0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-			push.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			push.view = glm::lookAt(glm::vec3(10.0f, 10.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			float aspect = WIDTH / (float)HEIGHT;
-			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 10.0f);
+			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 100.0f);
 			push.proj[1][1] *= -1;
 
 			vkCmdPushConstants(
