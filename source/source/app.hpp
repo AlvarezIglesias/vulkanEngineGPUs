@@ -1,7 +1,15 @@
 #pragma once
+#ifndef APP_H
+#define APP_H
+
+
+#include <tiny_obj_loader.h>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
+
+
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -69,3 +77,5 @@ namespace veg {
 		std::vector<VegGameObject> gameObjects;
 	};
 }
+
+#endif // !APP_H

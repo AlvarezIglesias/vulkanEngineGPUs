@@ -54,7 +54,7 @@ namespace veg {
 
 	void App::loadGameObjects()
 	{
-		std::vector<VegModel::Vertex> vertices{
+		/*std::vector<VegModel::Vertex> vertices{
 			{{0.0f, -0.5f, 0.f},{1.0f, 0.0f, 1.0f}},
 			{{0.5f, 0.5f, 0.f},{0.0f, 1.0f, 1.0f}},
 			{{-0.5f, 0.5f, 0.f},{1.0f, 1.0f, 0.0f}},
@@ -66,7 +66,34 @@ namespace veg {
 			{{0.0f, -0.5f, 0.f},{1.0f, 0.0f, 1.0f}},
 			{{0.5f, 0.f, 5.f},{0.0f, 1.0f, 1.0f}},
 			{{0.5f, 0.5f, 0.f},{1.0f, 1.0f, 0.0f}}
-		};
+		};*/
+
+
+		tinyobj::attrib_t attrib;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		std::string warn, err;
+
+		std::string path = "modelo.obj";
+
+		std::vector<VegModel::Vertex> vertices{};
+
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) {
+			throw std::runtime_error(warn + err);
+		}
+
+		for (const auto& shape : shapes) {
+			for (const auto& index : shape.mesh.indices) {
+				auto point1{ attrib.vertices[3 * index.vertex_index + 0] };
+				auto point2{ attrib.vertices[3 * index.vertex_index + 1] };
+				auto point3{ attrib.vertices[3 * index.vertex_index + 2] };
+
+
+				vertices.push_back({{point1, point2, point3},{ (index.vertex_index % 100)/100.f, 1.f, 1.f}});
+
+			}
+		}
+
 
 		auto vegModel = std::make_shared<VegModel>(vegDevice, vertices);
 
@@ -238,7 +265,7 @@ namespace veg {
 			push.model = glm::rotate(glm::mat4(1.0f),  0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			push.view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 			float aspect = WIDTH / (float)HEIGHT;
-			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 100.0f);
+			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 1000.0f);
 			push.proj[1][1] *= -1;
 
 			vkCmdPushConstants(
