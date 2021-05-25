@@ -9,15 +9,15 @@ namespace veg {
 		glm::mat2 transform{ 1.f };
 		glm::vec2 offset;
 		alignas(16) glm::vec3 color;
+		alignas(16) glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 proj;
 	};
+
 
 
 	App::App()
 	{
-		loadGameObjects();
-		loadGameObjects();
-		loadGameObjects();
-		loadGameObjects();
 		loadGameObjects();
 		createPipelineLayout();
 		recreateSwapChain();
@@ -62,6 +62,10 @@ namespace veg {
 
 	void App::createPipelineLayout()
 	{
+		/*VkDescriptorPoolSize poolSize{};
+		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSize.descriptorCount = static_cast<uint32_t> (vegSwapChain.im.size());*/
+
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		pushConstantRange.offset = 0;
@@ -189,12 +193,14 @@ namespace veg {
 
 	void App::renderGameObjects(VkCommandBuffer commandBuffer) {
 
-		int i = 0;
+		static int frame = 0;
+
+		/*int i = 0;
 		for (auto& obj : gameObjects) {
 			i++;
 			obj.trnasform2d.rotation = glm::mod<float>(obj.trnasform2d.rotation + 0.001f * i, 2.f * glm::pi<float>());
 			obj.color = { sin(obj.trnasform2d.rotation + 0.001f * i), 0.2f, cos(obj.trnasform2d.rotation + 0.001f * i) };
-		}
+		}*/
 
 
 
@@ -207,6 +213,12 @@ namespace veg {
 			push.offset = obj.trnasform2d.translation;
 			push.color = obj.color;
 			push.transform = obj.trnasform2d.mat2();
+
+			push.model = glm::rotate(glm::mat4(1.0f), frame++ * 0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			push.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			float aspect = WIDTH / (float)HEIGHT;
+			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 10.0f);
+			push.proj[1][1] *= -1;
 
 			vkCmdPushConstants(
 				commandBuffer,
