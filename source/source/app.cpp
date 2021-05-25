@@ -31,7 +31,7 @@ namespace veg {
 
 	void App::processInput(GLFWwindow* window)
 	{
-			const float cameraSpeed = 0.01f; // adjust accordingly
+			const float cameraSpeed = 2.f; // adjust accordingly
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			cameraPos += cameraSpeed * cameraFront;
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -261,9 +261,9 @@ namespace veg {
 			push.offset = obj.trnasform2d.translation;
 			push.color = obj.color;
 			push.transform = obj.trnasform2d.mat2();
-
-			push.model = glm::rotate(glm::mat4(1.0f),  0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-			push.view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+			 
+			push.model = glm::rotate(glm::mat4(1.0f), frame++ *  0.01f * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			push.view = glm::lookAt(cameraPos, {0.f,0.f,0.f}, cameraUp);
 			float aspect = WIDTH / (float)HEIGHT;
 			push.proj = glm::perspective(glm::radians(45.0f), atan(tan(100.f / 2) * aspect) * 2 , 0.1f, 1000.0f);
 			push.proj[1][1] *= -1;

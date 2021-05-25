@@ -62,9 +62,9 @@ namespace veg {
 
 		void processInput(GLFWwindow* window);
 
-		glm::vec3 cameraPos = glm::vec3(1.0f, 0.0f, 3.0f);
-		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 cameraPos = glm::vec3(100.0f, 100.0f, 50.0f);
+		glm::vec3 cameraFront = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
 
 		VegWindow vegWindow{ WIDTH, HEIGHT, "Veg engine" };
 		VegDevice vegDevice{ vegWindow };
