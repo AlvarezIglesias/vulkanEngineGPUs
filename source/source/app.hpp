@@ -3,18 +3,20 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 
 #include "veg_window.hpp"
 #include "veg_pipeline.hpp"
 #include "veg_device.hpp"
 #include "veg_swap_chain.hpp"
+#include "veg_game_object.hpp"
 
 #include <memory>
 #include <vector>
 #include <stdexcept>
 #include <array>
-#include "veg_model.hpp"
+
 
 
 
@@ -37,7 +39,7 @@ namespace veg {
 
 
 	private:
-		void loadModels();
+		void loadGameObjects();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -45,6 +47,7 @@ namespace veg {
 		void drawFrame();
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 		VegWindow vegWindow{ WIDTH, HEIGHT, "Veg engine" };
 		VegDevice vegDevice{ vegWindow };
@@ -54,6 +57,6 @@ namespace veg {
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
 
-		std::unique_ptr<VegModel> vegModel;
+		std::vector<VegGameObject> gameObjects;
 	};
 }

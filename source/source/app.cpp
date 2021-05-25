@@ -6,6 +6,7 @@ namespace veg {
 
 	struct SimplePushConstantData
 	{
+		glm::mat2 transform{ 1.f };
 		glm::vec2 offset;
 		alignas(16) glm::vec3 color;
 	};
@@ -13,7 +14,11 @@ namespace veg {
 
 	App::App()
 	{
-		loadModels();
+		loadGameObjects();
+		loadGameObjects();
+		loadGameObjects();
+		loadGameObjects();
+		loadGameObjects();
 		createPipelineLayout();
 		recreateSwapChain();
 		createCommandBuffers();
@@ -34,7 +39,7 @@ namespace veg {
 		vkDeviceWaitIdle(vegDevice.device());
 	}
 
-	void App::loadModels()
+	void App::loadGameObjects()
 	{
 		std::vector<VegModel::Vertex> vertices{
 			{{0.0f, -0.5f},{1.0f, 0.0f, 1.0f}},
@@ -42,7 +47,16 @@ namespace veg {
 			{{-0.5f, 0.5f},{1.0f, 1.0f, 0.0f}}
 		};
 
-		vegModel = std::make_unique<VegModel>(vegDevice, vertices);
+		auto vegModel = std::make_shared<VegModel>(vegDevice, vertices);
+
+		auto triangle = VegGameObject::createGameObject();
+		triangle.model = vegModel;
+		triangle.color = { 0.1f, 0.8f, 0.1f };
+		triangle.trnasform2d.translation.x = 0.2f;
+		triangle.trnasform2d.scale = { 2.f, 0.5f };
+		triangle.trnasform2d.rotation = 0.25 * glm::two_pi<float>();
+
+		gameObjects.push_back(std::move(triangle));
 
 	}
 
@@ -126,8 +140,8 @@ namespace veg {
 
 	void App::recordCommandBuffer(int imageIndex) {
 
-		static int frame = 0;
-		frame = (frame + 1) % 1000;
+		/*static int frame = 0;
+		frame = (frame + 1) % 1000;*/
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -165,32 +179,46 @@ namespace veg {
 		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
 
-		vegPipeline->bind(commandBuffers[imageIndex]);
-		vegModel->bind(commandBuffers[imageIndex]);
+		renderGameObjects(commandBuffers[imageIndex]);
 
-		
+		vkCmdEndRenderPass(commandBuffers[imageIndex]);
+		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
+			throw std::runtime_error("Failed to record command buffer!");
+		}
+	}
 
-		for (int j = 0; j < 4; j++)
-		{
+	void App::renderGameObjects(VkCommandBuffer commandBuffer) {
+
+		int i = 0;
+		for (auto& obj : gameObjects) {
+			i++;
+			obj.trnasform2d.rotation = glm::mod<float>(obj.trnasform2d.rotation + 0.001f * i, 2.f * glm::pi<float>());
+			obj.color = { sin(obj.trnasform2d.rotation + 0.001f * i), 0.2f, cos(obj.trnasform2d.rotation + 0.001f * i) };
+		}
+
+
+
+		vegPipeline->bind(commandBuffer);
+		for (auto& obj : gameObjects) {
+
+			
+
 			SimplePushConstantData push{};
-			push.offset = { -0.5f + frame * 0.002f, -0.4f + j * 0.25f };
-			push.color = { cos(frame/100.0f) , sin(frame / 100.0f), 0.2f + 0.2f * j };
+			push.offset = obj.trnasform2d.translation;
+			push.color = obj.color;
+			push.transform = obj.trnasform2d.mat2();
 
 			vkCmdPushConstants(
-				commandBuffers[imageIndex],
+				commandBuffer,
 				pipelineLayout,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0,
 				sizeof(SimplePushConstantData),
 				&push);
 
-			vegModel->draw(commandBuffers[imageIndex]);
-			
-		}
+			obj.model->bind(commandBuffer);
+			obj.model->draw(commandBuffer);
 
-		vkCmdEndRenderPass(commandBuffers[imageIndex]);
-		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
-			throw std::runtime_error("Failed to record command buffer!");
 		}
 	}
 
